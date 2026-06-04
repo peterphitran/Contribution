@@ -19,22 +19,21 @@ The contribution is documentation-focused; it requires understanding how GraphQL
 
 ### Problem Description
 
-The Schema Contracts documentation currently provides instructions for serving contract schemas with Apollo Router, but it does not include equivalent guidance for Hive Router. As a result, users who use Hive Router may not know how to configure it to consume contract schemas from GraphQL Hive, leading to an incomplete documentation experience.
+The Schema Contracts documentation currently provides instructions for serving contract schemas with Hive Gateway and Apollo Router, but it does not provide equivalent instructions for Hive Router. Users looking to consume contract schemas through Hive Router do not have a documented example on the Contract Schema page.
 
 ### Expected Behavior
 
-The documentation should include a dedicated section explaining how to serve contract schemas using Hive Router, similar to the existing Apollo Router instructions. This should provide configuration examples and any necessary setup steps so Hive Router users can easily adopt contract schemas.
+The documentation should include instructions and a configuration example showing how to use a contract schema with Hive Router, similar to the existing guidance for Apollo Router.
 
 ### Current Behavior
 
-The documentation only contains instructions for Apollo Router. Users of Hive Router must search through other documentation or source code to determine the correct configuration, and there is no clear, centralized example available on the Schema Contracts page.
+The "Serving a Contract Schema" section only references Hive Gateway and Apollo Router. There are no documented instructions or examples for Hive Router.
 
 ### Affected Components
 
-GraphQL Hive documentation for Schema Contracts
-Documentation page covering contract schema serving and consumption
-Hive Router configuration examples and related documentation references
-Any documentation navigation or examples that reference router-specific contract schema setup
+Schema Contracts documentation
+"Serving a Contract Schema" section
+Hive Router documentation/examples
 
 ---
 

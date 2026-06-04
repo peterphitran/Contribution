@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Peter Tran  
 **Issue:** https://github.com/graphql-hive/console/issues/6575<br>
-**Status:** Phase I In Progress
+**Status:** Phase I Complete
 
 ---
 

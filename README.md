@@ -3,15 +3,15 @@
 **Contribution Number:** 1  
 **Student:** Peter Tran  
 **Issue:** https://github.com/graphql-hive/console/issues/6575<br>
-**Status:** Phase III Complete
+**Status:** Phase IV Complete
 
 ---
 
 ## Why I Chose This Issue
 
-I'm interested in contributing to the GraphQL Hive issue focused on documenting schema contract usage with Hive Router because it provides an opportunity to improve the experience of developers adopting GraphQL Hive. Clear and complete documentation is essential for open-source projects, and ensuring that Hive Router users have the same guidance currently available for Apollo Router will make the platform more accessible and easier to use. I enjoy contributing to tools that help developers be more productive, and this issue has a direct impact on the usability of the project.
+I chose this issue because it improves the experience of developers adopting GraphQL Hive. Good documentation matters for open-source projects, and giving Hive Router users the same guidance that Apollo Router users already have makes the platform easier to use.
 
-The contribution is documentation-focused; it requires understanding how GraphQL Hive and Hive Router interact, which will help me deepen my knowledge of GraphQL infrastructure and large-scale open-source projects. I want to learn more about GraphQL schema management, documentation best practices, and the workflow maintainers use to review and integrate community contributions.
+The work is documentation-focused, so it helps me learn how GraphQL Hive and Hive Router work together, and how maintainers review and merge community contributions.
 
 ---
 
@@ -55,7 +55,7 @@ These steps reproduce the documentation gap deterministically against the base o
 
 1. Open the Schema Contracts page source at the base commit: https://github.com/graphql-hive/docs/blob/8903d44/packages/documentation/content/docs/schema-registry/contracts.mdx (or check out `main` at `8903d44` locally and open `packages/documentation/content/docs/schema-registry/contracts.mdx`).
 2. Locate the `## Serving a Contract Schema` section (around line 235).
-3. Read the section's only guidance — a single sentence: _"Point your Hive Gateway or Apollo Router instance to the supergraph of the contract schema:"_ — followed by the contract supergraph endpoint URL pattern.
+3. Read the section's only guidance, a single sentence (_"Point your Hive Gateway or Apollo Router instance to the supergraph of the contract schema:"_) followed by the contract supergraph endpoint URL pattern.
 4. **Observed result:** Hive Router is not mentioned anywhere in the section, and there are no per-integration configuration examples (no copy-paste setup for Hive Gateway, Hive Router, or Apollo Router).
 5. **Cross-check:** Confirm Hive Router *is* documented for the regular (non-contract) supergraph at `/docs/router/supergraph`, which shows the omission is specific to the contracts page. (Equivalently, the published page https://the-guild.dev/graphql/hive/docs/schema-registry/contracts#serving-a-contract-schema referenced only Hive Gateway / Apollo Router, as noted in the issue.)
 
@@ -63,7 +63,7 @@ These steps reproduce the documentation gap deterministically against the base o
 
 - **Branch in my fork:** https://github.com/peterphitran/docs/tree/docs/serving-contract-schema
 - **Commit showing the change:** https://github.com/peterphitran/docs/commit/260e148dd22f0b601cd5381a4fc6a94c8b24bfb8
-- **My findings:** The "Serving a Contract Schema" section already existed but covered only Hive Gateway and Apollo Router in one prose sentence — no Hive Router guidance and no concrete examples. Hive Router can load a supergraph directly from the Hive CDN via `source: hive` (with `endpoint` + `key`) in `router.config.yaml`, so the contract supergraph URL plugs into the exact same mechanism. I validated locally that the contract supergraph is served by the CDN (HTTP 200) and that a gateway pointed at the contract endpoint serves the filtered schema (the excluded tagged field was removed).
+- **My findings:** The "Serving a Contract Schema" section already existed but covered only Hive Gateway and Apollo Router in one prose sentence, with no Hive Router guidance and no examples. Hive Router can load a supergraph directly from the Hive CDN via `source: hive` (with `endpoint` + `key`) in `router.config.yaml`, so the contract supergraph URL uses the exact same mechanism. I confirmed locally that the CDN serves the contract supergraph (HTTP 200) and that a gateway pointed at the contract endpoint serves the filtered schema (the excluded tagged field was removed).
 
 ---
 
@@ -83,7 +83,7 @@ Using UMPIRE framework (adapted):
 
 **Understand:** The contracts page documents serving a contract supergraph for Hive Gateway and Apollo Router but omits Hive Router; add equivalent Hive Router instructions (#6575).
 
-**Match:** Reuse existing patterns — the non-contract Hive Router docs at `/docs/router/supergraph` already show loading from the CDN with `source: hive` / `endpoint` / `key`; the Apollo Router contract guidance uses `HIVE_CDN_ENDPOINT` / `HIVE_CDN_KEY`; the contracts page already uses a "point X at the contract supergraph endpoint" structure with a documented endpoint URL pattern.
+**Match:** Reuse existing patterns. The non-contract Hive Router docs at `/docs/router/supergraph` already show loading from the CDN with `source: hive`, `endpoint`, and `key`. The Apollo Router contract guidance uses `HIVE_CDN_ENDPOINT` and `HIVE_CDN_KEY`. The contracts page already uses a "point X at the contract supergraph endpoint" structure with a documented endpoint URL pattern.
 
 **Plan:**
 1. Update the section intro to include Hive Router alongside Hive Gateway and Apollo Router.
@@ -95,7 +95,7 @@ Using UMPIRE framework (adapted):
 
 **Review:** Confirm all three internal doc links resolve, image references match the canonical pages (gateway untagged, router `:latest`), and the MDX renders; `oxfmt` only formats JS/TS, so no MDX formatting pass is needed.
 
-**Evaluate:** Validate the documented flow against a local Hive Console — create a contract, publish a schema version, confirm the CDN serves the contract supergraph (HTTP 200), and run Hive Gateway against the contract endpoint to confirm the excluded (tagged) field is filtered from the served schema.
+**Evaluate:** Validate the documented flow against a local Hive Console: create a contract, publish a schema version, confirm the CDN serves the contract supergraph (HTTP 200), and run Hive Gateway against the contract endpoint to confirm the excluded (tagged) field is filtered from the served schema.
 
 ---
 
@@ -105,14 +105,14 @@ Because this is a documentation contribution, "testing" means link/format/render
 
 ### Automated Checks (CI)
 
-- [x] **MDX link validation** — all three internal links I added (`/docs/gateway/supergraph-proxy-source`, `/docs/router/supergraph`, and `/docs/other-integrations/apollo-router`) resolve to existing pages; the repo runs a `validate-mdx-links` workflow on every `content/**/*.mdx` change to enforce this.
-- [x] **Format check** — `oxfmt` only formats JS/TS, so the MDX edit cannot introduce a formatting regression (`format:check` is unaffected).
-- [x] **Page builds & renders** — the Fumadocs/MDX page compiles and renders the new subsections locally without errors.
+- [x] **MDX link validation:** all three internal links I added (`/docs/gateway/supergraph-proxy-source`, `/docs/router/supergraph`, and `/docs/other-integrations/apollo-router`) resolve to existing pages. The repo runs a `validate-mdx-links` workflow on every `content/**/*.mdx` change to enforce this.
+- [x] **Format check:** `oxfmt` only formats JS/TS, so the MDX edit cannot cause a formatting regression (`format:check` is unaffected).
+- [x] **Page builds and renders:** the Fumadocs/MDX page compiles and renders the new subsections locally without errors.
 
 ### Integration / End-to-End Validation
 
-- [x] **Local Hive Console** — stood up the `dev:hive` stack (Docker, WSL2), created a target and project, defined a `public-no-pii` contract that excludes fields tagged `pii`, and published a schema version.
-- [x] **CDN serves the contract supergraph** — `GET …/contracts/public-no-pii/supergraph` returned **HTTP 200** with a valid supergraph SDL — the exact endpoint shape the new instructions tell users to point at.
+- [x] **Local Hive Console:** stood up the `dev:hive` stack (Docker, WSL2), created a target and project, defined a `public-no-pii` contract that excludes fields tagged `pii`, and published a schema version.
+- [x] **CDN serves the contract supergraph:** `GET .../contracts/public-no-pii/supergraph` returned **HTTP 200** with a valid supergraph SDL, the exact endpoint shape the new instructions tell users to point at.
 
 ### Manual Testing
 
@@ -123,7 +123,7 @@ To confirm the _runtime_ behavior (not just that the CDN responds), I ran Hive G
 | Base (port 4000)     | full supergraph          | **present**                 |
 | Contract (port 4099) | `public-no-pii` endpoint | **filtered out**            |
 
-All non-PII `User` fields remained in both. This proves that a gateway pointed at the contract supergraph endpoint — exactly as the new Hive Gateway / Hive Router / Apollo Router instructions describe — serves the filtered schema. I also visually reviewed the rendered MDX: the intro lists all three runtimes, and each `###` subsection shows a copy-paste example with the correct CDN endpoint pattern and a link to its canonical docs page.
+All non-PII `User` fields remained in both. This proves that a gateway pointed at the contract supergraph endpoint serves the filtered schema, exactly as the new Hive Gateway, Hive Router, and Apollo Router instructions describe. I also reviewed the rendered MDX: the intro lists all three runtimes, and each `###` subsection shows a copy-paste example with the correct CDN endpoint pattern and a link to its canonical docs page.
 
 ---
 
@@ -131,38 +131,53 @@ All non-PII `User` fields remained in both. This proves that a gateway pointed a
 
 ### Implementation Summary
 
-The change is scoped to a single file — `packages/documentation/content/docs/schema-registry/contracts.mdx` (+48 / −1). I rewrote the one-sentence intro of the `## Serving a Contract Schema` section to reference all three runtimes, then split the guidance into three self-contained, copy-paste subsections:
+The change is in a single file, `packages/documentation/content/docs/schema-registry/contracts.mdx` (+48 / -1). I rewrote the one-sentence intro of the `## Serving a Contract Schema` section to mention all three runtimes, then split the guidance into three self-contained, copy-paste subsections:
 
-- **`### Hive Gateway`** — `docker run … ghcr.io/graphql-hive/gateway supergraph "<contract endpoint>" --hive-cdn-key "<key>"`, linking to `/docs/gateway/supergraph-proxy-source`.
-- **`### Hive Router`** — a `router.config.yaml` that loads the contract supergraph from the Hive CDN via `supergraph.source: hive` (`endpoint` = contract supergraph URL, `key` = CDN access key), plus the `docker run` that mounts the config; links to `/docs/router/supergraph`.
-- **`### Apollo Router`** — `docker run … --env HIVE_CDN_ENDPOINT="<contract endpoint>" --env HIVE_CDN_KEY="<key>" ghcr.io/graphql-hive/apollo-router`, linking to `/docs/other-integrations/apollo-router`.
+- **`### Hive Gateway`:** `docker run ... ghcr.io/graphql-hive/gateway supergraph "<contract endpoint>" --hive-cdn-key "<key>"`, linking to `/docs/gateway/supergraph-proxy-source`.
+- **`### Hive Router`:** a `router.config.yaml` that loads the contract supergraph from the Hive CDN via `supergraph.source: hive` (`endpoint` = contract supergraph URL, `key` = CDN access key), plus the `docker run` that mounts the config. Links to `/docs/router/supergraph`.
+- **`### Apollo Router`:** `docker run ... --env HIVE_CDN_ENDPOINT="<contract endpoint>" --env HIVE_CDN_KEY="<key>" ghcr.io/graphql-hive/apollo-router`, linking to `/docs/other-integrations/apollo-router`.
 
-The key insight was that Hive Router already consumes a supergraph directly from the Hive CDN with `source: hive`, so the contract supergraph URL plugs into the _same_ mechanism as a regular supergraph — no new config shape was needed, just the contract-specific endpoint. The main friction was environment-related (running the docs dev server from the Windows filesystem through WSL hit a nitro module-runner timeout), which I worked around so I could preview the rendered MDX locally.
+The key insight was that Hive Router already loads a supergraph from the Hive CDN with `source: hive`, so the contract supergraph URL uses the same mechanism as a regular supergraph. No new config shape was needed, just the contract-specific endpoint. The main friction was environmental: running the docs dev server from the Windows filesystem through WSL hit a nitro module-runner timeout, which I worked around so I could preview the rendered MDX locally.
 
 ### Code Changes
 
-- **Files modified:** `packages/documentation/content/docs/schema-registry/contracts.mdx` — the only file changed in this contribution (+48 / −1).
+- **Files modified:** `packages/documentation/content/docs/schema-registry/contracts.mdx`, the only file changed in this contribution (+48 / -1).
 - **Active branch:** https://github.com/peterphitran/docs/tree/docs/serving-contract-schema
-- **Key commit:** [`260e148`](https://github.com/peterphitran/docs/commit/260e148dd22f0b601cd5381a4fc6a94c8b24bfb8) — adds Hive Router instructions and splits the section into per-runtime subsections.
+- **Key commit:** [`260e148`](https://github.com/peterphitran/docs/commit/260e148dd22f0b601cd5381a4fc6a94c8b24bfb8), which adds Hive Router instructions and splits the section into per-runtime subsections.
 - **Pull request:** https://github.com/graphql-hive/docs/pull/129
 - **Approach decisions:**
   - Reused the existing `source: hive` CDN-loading pattern from the non-contract router docs instead of inventing a new Hive Router config for contracts.
-  - Split the single prose sentence into three per-runtime subsections so each integration is independently copy-paste-able, with a link to its canonical docs page.
-  - Kept image references consistent with the canonical pages (Hive Gateway image untagged, Hive Router `:latest`, Apollo Router driven by `HIVE_CDN_ENDPOINT` / `HIVE_CDN_KEY`).
+  - Split the single prose sentence into three per-runtime subsections so each integration is self-contained and copy-paste-able, with a link to its canonical docs page.
+  - Kept image references consistent with the canonical pages (Hive Gateway image untagged, Hive Router `:latest`, Apollo Router driven by `HIVE_CDN_ENDPOINT` and `HIVE_CDN_KEY`).
 
 ---
 
 ## Pull Request
 
-**PR Link:** [GitHub PR URL when submitted]
+**PR Link:** https://github.com/graphql-hive/docs/pull/129
 
-**PR Description:** [Draft or final PR description - much of the content above can be adapted]
+**What I contributed:** Added Hive Router guidance to the "Serving a Contract Schema" section of the Schema Contracts docs and split the section into three self-contained, copy-paste subsections (Hive Gateway, Hive Router, and Apollo Router), each with a runnable example and a link to its canonical docs page. One file, `packages/documentation/content/docs/schema-registry/contracts.mdx` (+48 / -1).
 
-**Maintainer Feedback:**
-- [Date]: [Summary of feedback received]
-- [Date]: [How you addressed it]
+**PR Description:**
 
-**Status:** [Awaiting review / Iterating / Approved / Merged]
+> **Summary**
+> The "Serving a Contract Schema" section only explained how to serve a contract supergraph with Hive Gateway and Apollo Router, leaving Hive Router users without guidance. This PR adds Hive Router and gives each runtime its own copy-paste example.
+>
+> **Changes**
+>
+> - Reworded the section intro to cover Hive Gateway, Hive Router, and Apollo Router.
+> - Added `### Hive Gateway`, `### Hive Router`, and `### Apollo Router` subsections, each with a runnable example and a link to its canonical docs.
+> - Hive Router loads the contract supergraph from the Hive CDN via `source: hive` (`endpoint` + `key`), the same mechanism already documented for a regular supergraph, just pointed at the contract endpoint.
+>
+> **Closes** graphql-hive/console#6575
+
+**Maintainer Feedback / Next Steps:**
+
+- Reviewed and **approved by `@n1ru4l`** with no requested changes.
+- **Merged by `@dotansimha`** into `graphql-hive/docs:main`. The change is now live in the docs.
+- Merging auto-closed the originating issue [`graphql-hive/console#6575`](https://github.com/graphql-hive/console/issues/6575) as completed. No further action required.
+
+**Status:** Merged
 
 ---
 
@@ -170,20 +185,36 @@ The key insight was that Hive Router already consumes a supergraph directly from
 
 ### Technical Skills Gained
 
-[What you learned technically]
+- **GraphQL Hive schema contracts:** how `@tag`-based contracts produce a filtered contract supergraph, and how that supergraph is served separately from the full one.
+- **Supergraph-from-CDN loading across runtimes:** Hive Router and Hive Gateway both load a supergraph from the Hive CDN (`source: hive` with `endpoint` + `key`), and Apollo Router does the equivalent via `HIVE_CDN_ENDPOINT` and `HIVE_CDN_KEY`. Recognizing that the contract endpoint uses the same mechanism was the core insight behind the fix.
+- **Running Hive Console locally:** brought up the `dev:hive` stack with Docker under WSL2, created a target and project, defined a contract, and published a schema version end-to-end.
+- **Verifying behavior, not just output:** introspected two running gateways and compared the schemas to prove a tagged (PII) field is actually filtered through the contract endpoint.
+- **Docs tooling:** authoring Fumadocs/MDX in a Bun + Turborepo + TanStack Start/Vite monorepo, and the open-source workflow (fork, branch, commit, PR, CI link validation, then maintainer review and merge).
 
 ### Challenges Overcome
 
-[What was hard and how you solved it]
+- **WSL `/mnt/c` dev-server timeout:** running the docs site from the Windows filesystem through WSL made the first cold SSR import exceed nitro's hard-coded 60s module-runner RPC timeout, so every page returned a 503. I traced it to the runner timeout and worked around it by raising `NITRO_VITE_RUNNER_TIMEOUT_MS` and making the Vite cache dir configurable, enough to preview the rendered MDX locally.
+- **Port conflicts during validation:** the `dev:hive` stack already occupied the usual gateway ports (4000-4002), so my test gateway hit `EADDRINUSE`. I checked the listening ports and launched the contract gateway on a free port (4099) instead.
+- **Proving the filter actually works:** rather than trust the docs, I stood up a `public-no-pii` contract and confirmed the base gateway served `User.email` while the contract gateway omitted it, turning "this should work" into a verified result.
+- **Windows and WSL shell quoting:** PowerShell to WSL handoffs mangled quoted commit messages and piped grep patterns, so I switched to plain ASCII, quote-free commands to get clean commits.
 
 ### What I'd Do Differently Next Time
 
-[Reflection on your process]
+- **Run the docs dev server from the native Linux filesystem** (WSL home) instead of `/mnt/c` to avoid the nitro timeout entirely, rather than patching around it.
+- **Keep the branch scoped from the start:** isolate the single doc change on its own branch immediately and keep the local dev-environment workarounds on a separate branch, so the working tree stays clean and the PR diff is minimal.
+- **Build the verification harness earlier:** I confirmed the runtime filtering near the end; setting up the local contract gateway first would have let me write the examples with full confidence from the outset.
 
 ---
 
 ## Resources Used
 
-- [Link to helpful documentation]
-- [Tutorial or Stack Overflow post that helped]
-- [GitHub issues or discussions that helped]
+- **Issue I worked on:** [graphql-hive/console#6575](https://github.com/graphql-hive/console/issues/6575)
+- **Docs repo (contributing setup & monorepo layout):** [graphql-hive/docs](https://github.com/graphql-hive/docs)
+- **Schema Contracts page (the page I edited):** https://the-guild.dev/graphql/hive/docs/schema-registry/contracts
+- **Hive Router Supergraph Source** (the `source: hive` pattern I reused): https://the-guild.dev/graphql/hive/docs/router/supergraph
+- **Hive Gateway Supergraph Proxy Source:** https://the-guild.dev/graphql/hive/docs/gateway/supergraph-proxy-source
+- **Apollo Router integration:** https://the-guild.dev/graphql/hive/docs/other-integrations/apollo-router
+- **Hive Console (for the local `dev:hive` stack):** [graphql-hive/console](https://github.com/graphql-hive/console)
+- **Fumadocs (MDX docs framework):** https://fumadocs.dev
+- **TanStack Start (app framework):** https://tanstack.com/start
+- **Nitro dev server:** source of the SSR module-runner RPC timeout I debugged, tuned via the repo's `nitro-nightly` patch and `NITRO_VITE_RUNNER_TIMEOUT_MS`.

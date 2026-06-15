@@ -3,7 +3,7 @@
 **Contribution Number:** 1  
 **Student:** Peter Tran  
 **Issue:** https://github.com/graphql-hive/console/issues/6575<br>
-**Status:** Phase II Complete
+**Status:** Phase III Complete
 
 ---
 
@@ -101,38 +101,54 @@ Using UMPIRE framework (adapted):
 
 ## Testing Strategy
 
-### Unit Tests
+Because this is a documentation contribution, "testing" means link/format/render validation plus an end-to-end check of the runtime behavior the docs describe.
 
-- [ ] Test case 1: [Description]
-- [ ] Test case 2: [Description]
-- [ ] Test case 3: [Description]
+### Automated Checks (CI)
 
-### Integration Tests
+- [x] **MDX link validation** — all three internal links I added (`/docs/gateway/supergraph-proxy-source`, `/docs/router/supergraph`, and `/docs/other-integrations/apollo-router`) resolve to existing pages; the repo runs a `validate-mdx-links` workflow on every `content/**/*.mdx` change to enforce this.
+- [x] **Format check** — `oxfmt` only formats JS/TS, so the MDX edit cannot introduce a formatting regression (`format:check` is unaffected).
+- [x] **Page builds & renders** — the Fumadocs/MDX page compiles and renders the new subsections locally without errors.
 
-- [ ] Integration scenario 1
-- [ ] Integration scenario 2
+### Integration / End-to-End Validation
+
+- [x] **Local Hive Console** — stood up the `dev:hive` stack (Docker, WSL2), created a target and project, defined a `public-no-pii` contract that excludes fields tagged `pii`, and published a schema version.
+- [x] **CDN serves the contract supergraph** — `GET …/contracts/public-no-pii/supergraph` returned **HTTP 200** with a valid supergraph SDL — the exact endpoint shape the new instructions tell users to point at.
 
 ### Manual Testing
 
-[What you tested manually and results]
+To confirm the _runtime_ behavior (not just that the CDN responds), I ran Hive Gateway against both the full and the contract supergraph and compared the served schemas:
+
+| Gateway              | Supergraph source        | `User.email` (tagged `pii`) |
+| -------------------- | ------------------------ | --------------------------- |
+| Base (port 4000)     | full supergraph          | **present**                 |
+| Contract (port 4099) | `public-no-pii` endpoint | **filtered out**            |
+
+All non-PII `User` fields remained in both. This proves that a gateway pointed at the contract supergraph endpoint — exactly as the new Hive Gateway / Hive Router / Apollo Router instructions describe — serves the filtered schema. I also visually reviewed the rendered MDX: the intro lists all three runtimes, and each `###` subsection shows a copy-paste example with the correct CDN endpoint pattern and a link to its canonical docs page.
 
 ---
 
 ## Implementation Notes
 
-### Week [X] Progress
+### Implementation Summary
 
-[What you built this week, challenges faced, decisions made]
+The change is scoped to a single file — `packages/documentation/content/docs/schema-registry/contracts.mdx` (+48 / −1). I rewrote the one-sentence intro of the `## Serving a Contract Schema` section to reference all three runtimes, then split the guidance into three self-contained, copy-paste subsections:
 
-### Week [Y] Progress
+- **`### Hive Gateway`** — `docker run … ghcr.io/graphql-hive/gateway supergraph "<contract endpoint>" --hive-cdn-key "<key>"`, linking to `/docs/gateway/supergraph-proxy-source`.
+- **`### Hive Router`** — a `router.config.yaml` that loads the contract supergraph from the Hive CDN via `supergraph.source: hive` (`endpoint` = contract supergraph URL, `key` = CDN access key), plus the `docker run` that mounts the config; links to `/docs/router/supergraph`.
+- **`### Apollo Router`** — `docker run … --env HIVE_CDN_ENDPOINT="<contract endpoint>" --env HIVE_CDN_KEY="<key>" ghcr.io/graphql-hive/apollo-router`, linking to `/docs/other-integrations/apollo-router`.
 
-[Continue documenting as you work]
+The key insight was that Hive Router already consumes a supergraph directly from the Hive CDN with `source: hive`, so the contract supergraph URL plugs into the _same_ mechanism as a regular supergraph — no new config shape was needed, just the contract-specific endpoint. The main friction was environment-related (running the docs dev server from the Windows filesystem through WSL hit a nitro module-runner timeout), which I worked around so I could preview the rendered MDX locally.
 
 ### Code Changes
 
-- **Files modified:** [List]
-- **Key commits:** [Links to important commits]
-- **Approach decisions:** [Why you chose certain approaches]
+- **Files modified:** `packages/documentation/content/docs/schema-registry/contracts.mdx` — the only file changed in this contribution (+48 / −1).
+- **Active branch:** https://github.com/peterphitran/docs/tree/docs/serving-contract-schema
+- **Key commit:** [`260e148`](https://github.com/peterphitran/docs/commit/260e148dd22f0b601cd5381a4fc6a94c8b24bfb8) — adds Hive Router instructions and splits the section into per-runtime subsections.
+- **Pull request:** https://github.com/graphql-hive/docs/pull/129
+- **Approach decisions:**
+  - Reused the existing `source: hive` CDN-loading pattern from the non-contract router docs instead of inventing a new Hive Router config for contracts.
+  - Split the single prose sentence into three per-runtime subsections so each integration is independently copy-paste-able, with a link to its canonical docs page.
+  - Kept image references consistent with the canonical pages (Hive Gateway image untagged, Hive Router `:latest`, Apollo Router driven by `HIVE_CDN_ENDPOINT` / `HIVE_CDN_KEY`).
 
 ---
 
